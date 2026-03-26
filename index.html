@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Gamified productivity, fitness & wellness — inspired by Solo Leveling">
+    <title>The System — Solo Leveling Life</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- BOOT SCREEN -->
+    <div class="boot-screen" id="boot-screen">
+        <div class="boot-content">
+            <div class="boot-glitch">THE SYSTEM</div>
+            <div class="boot-sub">Connecting to server...</div>
+            <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- AUTH SCREEN -->
+    <div class="auth-screen hidden" id="auth-screen">
+        <div class="auth-panel">
+            <div class="system-msg">[System]</div>
+            <div class="auth-title" id="auth-title">Hunter Registration</div>
+            <p class="auth-prompt" id="auth-prompt">Create your Hunter profile.</p>
+            <input type="text" id="auth-name" placeholder="Hunter Name" autocomplete="off" spellcheck="false">
+            <input type="email" id="auth-email" placeholder="Email" autocomplete="email">
+            <input type="password" id="auth-pass" placeholder="Password (min 6 chars)" autocomplete="new-password">
+            <button class="btn-system" id="auth-submit">REGISTER</button>
+            <div class="auth-error hidden" id="auth-error"></div>
+            <div class="auth-switch"><span id="auth-switch-text">Already a Hunter?</span> <a href="#" id="auth-switch-link">Login</a></div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app hidden" id="app">
+        <div class="top-bar">
+            <span class="top-bar-name" id="top-bar-name">Hunter</span>
+            <div class="top-bar-status" id="top-bar-status">●</div>
+            <button class="btn-logout" id="btn-logout" title="Logout">⏻</button>
+        </div>
+
+        <!-- STATUS TAB -->
+        <section id="tab-status" class="tab-content active">
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Hunter Status</div>
+                <div class="player-info">
+                    <div class="rank-badge" id="rank-badge">E</div>
+                    <div>
+                        <div class="player-name" id="player-name">Hunter</div>
+                        <div class="level-label">Level <span id="player-level">1</span></div>
+                    </div>
+                </div>
+                <div class="xp-section">
+                    <div class="xp-labels"><span>EXP</span><span id="xp-text">0/100</span></div>
+                    <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Attributes</div>
+                <div class="stat-points-info" id="stat-points-info" style="display:none">You have <span id="available-points">0</span> stat points to distribute!</div>
+                <div class="stats-grid" id="stats-grid"></div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Today's Progress</div>
+                <div class="today-stats">
+                    <div class="today-stat"><div class="today-val" id="today-completed">0</div><div class="today-label">Completed</div></div>
+                    <div class="today-stat"><div class="today-val" id="today-xp">0</div><div class="today-label">XP Gained</div></div>
+                    <div class="today-stat"><div class="today-val" id="today-streak">0</div><div class="today-label">Day Streak</div></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Battle Record</div>
+                <div class="today-stats">
+                    <div class="today-stat"><div class="today-val" style="color:var(--green)" id="total-wins">0</div><div class="today-label">Wins</div></div>
+                    <div class="today-stat"><div class="today-val" style="color:var(--red)" id="total-losses">0</div><div class="today-label">Losses</div></div>
+                    <div class="today-stat"><div class="today-val" style="color:var(--gold)" id="win-rate">0%</div><div class="today-label">Win Rate</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUESTS TAB -->
+        <section id="tab-quests" class="tab-content">
+            <div class="panel quests-header-panel">
+                <div class="panel-header">
+                    <span class="system-tag">[System]</span> Daily Quests
+                    <button class="btn-add-quest" id="btn-add-quest">+</button>
+                </div>
+                <div class="quest-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="exercise">🏋️</button>
+                    <button class="filter-btn" data-filter="productivity">📚</button>
+                    <button class="filter-btn" data-filter="wellness">💧</button>
+                </div>
+            </div>
+            <div class="quests-list" id="quests-list"></div>
+        </section>
+
+        <!-- HUNTERS TAB -->
+        <section id="tab-hunters" class="tab-content">
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Hunter Network</div>
+                <p class="hunter-desc">Add Hunters as allies or mark them as enemies. Challenge enemies to battle!</p>
+            </div>
+            <div class="hunter-sub-tabs">
+                <button class="hunter-sub-btn active" data-htab="all-hunters">All Hunters</button>
+                <button class="hunter-sub-btn" data-htab="allies">🤝 Allies</button>
+                <button class="hunter-sub-btn" data-htab="enemies">💀 Enemies</button>
+                <button class="hunter-sub-btn" data-htab="verify">✅ Verify</button>
+            </div>
+            <div class="hunters-list" id="hunters-list"></div>
+        </section>
+
+        <!-- SHADOWS TAB -->
+        <section id="tab-shadows" class="tab-content">
+            <div class="panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Shadow Army</div>
+                <p class="shadow-desc">Habits completed 3+ days become Shadow Soldiers.</p>
+            </div>
+            <div class="shadows-grid" id="shadows-grid">
+                <div class="shadow-empty" id="shadow-empty">
+                    <div class="shadow-empty-icon">👥</div>
+                    <p>No Shadow Soldiers yet. Complete quests consistently to recruit them.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NAV BAR -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" data-tab="status"><span class="nav-icon">👤</span><span>Status</span></button>
+            <button class="nav-btn" data-tab="quests"><span class="nav-icon">⚔️</span><span>Quests</span></button>
+            <button class="nav-btn" data-tab="hunters"><span class="nav-icon">🏹</span><span>Hunters</span></button>
+            <button class="nav-btn" data-tab="shadows"><span class="nav-icon">👥</span><span>Shadows</span></button>
+        </nav>
+
+        <!-- ADD QUEST MODAL -->
+        <div class="modal-overlay hidden" id="quest-modal">
+            <div class="modal-panel">
+                <div class="panel-header">
+                    <span class="system-tag">[System]</span> New Quest
+                    <button class="btn-close-modal" id="btn-close-modal">✕</button>
+                </div>
+                <div class="modal-body">
+                    <label>Quest Name</label>
+                    <input type="text" id="quest-name-input" placeholder="e.g. Do 50 push-ups" maxlength="50" autocomplete="off">
+                    <label>Category</label>
+                    <div class="category-select">
+                        <button class="cat-btn active" data-cat="exercise">🏋️ Exercise</button>
+                        <button class="cat-btn" data-cat="productivity">📚 Productivity</button>
+                        <button class="cat-btn" data-cat="wellness">💧 Wellness</button>
+                    </div>
+                    <label>Difficulty</label>
+                    <div class="diff-select">
+                        <button class="diff-btn" data-diff="E">E</button>
+                        <button class="diff-btn active" data-diff="D">D</button>
+                        <button class="diff-btn" data-diff="C">C</button>
+                        <button class="diff-btn" data-diff="B">B</button>
+                        <button class="diff-btn" data-diff="A">A</button>
+                        <button class="diff-btn" data-diff="S">S</button>
+                    </div>
+                    <label>Timer (optional)</label>
+                    <div class="timer-select">
+                        <button class="timer-btn active" data-mins="0">None</button>
+                        <button class="timer-btn" data-mins="10">10m</button>
+                        <button class="timer-btn" data-mins="20">20m</button>
+                        <button class="timer-btn" data-mins="30">30m</button>
+                        <button class="timer-btn" data-mins="60">1h</button>
+                    </div>
+                    <button class="btn-system btn-create-quest" id="btn-create-quest">CREATE QUEST</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BATTLE OVERLAY -->
+        <div class="battle-overlay hidden" id="battle-overlay">
+            <div class="battle-arena">
+                <div class="battle-header">
+                    <span class="system-tag">[System]</span> HUNTER BATTLE
+                </div>
+                <div class="battle-fighters">
+                    <div class="fighter fighter-left">
+                        <div class="fighter-rank" id="b-left-rank">E</div>
+                        <div class="fighter-name" id="b-left-name">You</div>
+                        <div class="fighter-level" id="b-left-level">Lv.1</div>
+                        <div class="hp-bar"><div class="hp-fill" id="b-left-hp"></div></div>
+                        <div class="hp-text" id="b-left-hp-text">100/100</div>
+                    </div>
+                    <div class="battle-vs">VS</div>
+                    <div class="fighter fighter-right">
+                        <div class="fighter-rank" id="b-right-rank">E</div>
+                        <div class="fighter-name" id="b-right-name">Enemy</div>
+                        <div class="fighter-level" id="b-right-level">Lv.1</div>
+                        <div class="hp-bar"><div class="hp-fill hp-enemy" id="b-right-hp"></div></div>
+                        <div class="hp-text" id="b-right-hp-text">100/100</div>
+                    </div>
+                </div>
+                <div class="battle-log" id="battle-log"></div>
+                <div class="battle-actions" id="battle-actions">
+                    <button class="btn-battle" id="btn-attack">⚔️ Attack</button>
+                    <button class="btn-battle btn-magic" id="btn-magic">🔮 Magic</button>
+                    <button class="btn-battle btn-dodge" id="btn-dodge">💨 Dodge</button>
+                </div>
+                <div class="battle-result hidden" id="battle-result">
+                    <div class="result-text" id="result-text">VICTORY</div>
+                    <div class="result-xp" id="result-xp">+100 XP</div>
+                    <button class="btn-system" id="btn-battle-close">CLOSE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMER OVERLAY -->
+        <div class="timer-overlay hidden" id="timer-overlay">
+            <div class="timer-panel">
+                <div class="panel-header"><span class="system-tag">[System]</span> Quest Timer Active</div>
+                <div class="timer-quest-name" id="timer-quest-name">Quest Name</div>
+                <div class="timer-circle">
+                    <svg viewBox="0 0 120 120" class="timer-svg">
+                        <circle cx="60" cy="60" r="54" class="timer-bg-circle"/>
+                        <circle cx="60" cy="60" r="54" class="timer-progress" id="timer-progress"/>
+                    </svg>
+                    <div class="timer-display" id="timer-display">00:00</div>
+                </div>
+                <p class="timer-warning">⚠️ Don't leave this screen! Timer must complete.</p>
+                <button class="btn-system btn-cancel-timer" id="btn-cancel-timer">ABANDON QUEST</button>
+            </div>
+        </div>
+
+        <!-- PENALTY WARNING -->
+        <div class="penalty-overlay hidden" id="penalty-overlay">
+            <div class="penalty-panel">
+                <div class="system-msg" style="color:var(--red)">[System] WARNING</div>
+                <p class="penalty-title">Daily Quest Penalty</p>
+                <p class="penalty-desc">You failed to complete your daily quests. The System does not tolerate weakness.</p>
+                <div class="penalty-details" id="penalty-details"></div>
+                <button class="btn-system" id="btn-penalty-ok" style="background:linear-gradient(135deg,var(--red),#cc2233)">ACCEPT PENALTY</button>
+            </div>
+        </div>
+
+        <!-- TOASTS -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- LEVEL UP -->
+        <div class="levelup-overlay hidden" id="levelup-overlay">
+            <div class="levelup-content">
+                <div class="levelup-flash"></div>
+                <div class="levelup-text">LEVEL UP</div>
+                <div class="levelup-level" id="levelup-level">Level 2</div>
+                <div class="levelup-sub">+1 Stat Point Available</div>
+            </div>
+        </div>
+
+        <!-- RANK UP -->
+        <div class="rankup-overlay hidden" id="rankup-overlay">
+            <div class="rankup-content">
+                <div class="rankup-flash"></div>
+                <div class="rankup-badge" id="rankup-badge">D</div>
+                <div class="rankup-text">RANK UP</div>
+                <div class="rankup-rank" id="rankup-rank">D-Rank Hunter</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
